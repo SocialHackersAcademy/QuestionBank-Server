@@ -18,6 +18,12 @@ public class Main {
             e.printStackTrace();
         }
 
+        get("", (req, res) -> "Welcome to Social Hacker Academy's Question Bank API\n" +
+                "There are the existing endpoints:\n" +
+                "* GET /question 'Get a Random Question'\n"+
+                "* GET /question/all 'Get all question'\n"+
+                "* POST /question 'Send a new question to be saved'\n");
+
         get("/question", (req, res) -> {
             String attributeId = req.attribute("id");
 
