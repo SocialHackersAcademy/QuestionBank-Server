@@ -10,16 +10,16 @@ import java.util.ArrayList;
 
 public class FileHelper {
 
-    public static void saveQuestionListToJSONFile(ArrayList<Question> json) throws FileNotFoundException {
+    public static void saveQuestionListToJSONFile(ArrayList<Message> json) throws FileNotFoundException {
         PrintWriter out = new PrintWriter("questions.txt");
         out.println(new Gson().toJson(json));
     }
 
-    public static ArrayList<Question> readQuestionListToJSONFile() throws IOException {
+    public static ArrayList<Message> readQuestionListToJSONFile() throws IOException {
         String file = readFile("questions.txt");
 
         if(file != null){
-            return new Gson().fromJson(readFile("questions.txt"), new TypeToken<ArrayList<Question>>(){}.getType());
+            return new Gson().fromJson(readFile("questions.txt"), new TypeToken<ArrayList<Message>>(){}.getType());
         } else {
             return new ArrayList<>();
         }

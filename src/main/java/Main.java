@@ -8,7 +8,7 @@ import static spark.Spark.*;
 
 public class Main {
 
-    private static ArrayList<Question> list = new ArrayList<Question>();
+    private static ArrayList<Message> list = new ArrayList<Message>();
 
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
@@ -18,46 +18,29 @@ public class Main {
             e.printStackTrace();
         }
 
-        get("", (req, res) -> "Welcome to Social Hacker Academy's Question Bank API\n" +
+        get("", (req, res) -> "Welcome to Social Hacker Academy's Message Bank API\n" +
                 "There are the existing endpoints:\n" +
-                "* GET /question 'Get a Random Question'\n"+
+                "* GET /messages 'Get a Random Message'\n"+
                 "* GET /question/all 'Get all question'\n"+
                 "* POST /question 'Send a new question to be saved'\n");
 
-        get("/question", (req, res) -> {
-            String attributeId = req.attribute("id");
-
-            if(attributeId != null){
-                return new Gson().toJson(getQuestionById(attributeId));
-            } else {
-                return new Gson().toJson(list.get(new Random().nextInt(list.size())));
-            }
+        get("/messages", (req, res) -> {
+                return new Gson().toJson(list);
         });
 
-        get("/question/all", (req, res) -> new Gson().toJson(list));
+        post("/messages", (req, res) -> {
+            Message message = new Gson().fromJson(req.body(), Message.class);
 
-        post("/question", (req, res) -> {
-            Question question = new Gson().fromJson(req.body(), Question.class);
-
-            if(question.validate().equals("valid")) {
-                list.add(question);
+            if(message.validate().equals("valid")) {
+                list.add(message);
                 FileHelper.saveQuestionListToJSONFile(list);
                 return new Gson().toJson(list);
             } else {
-                return new Gson().toJson(question.validate());
+                return new Gson().toJson(message.validate());
             }
         });
 
         attachCors();
-    }
-
-    private static Question getQuestionById(String id){
-        return list.stream()
-                .filter(item -> item.id.equals(id))
-                .reduce((a, b) -> {
-                    throw new IllegalStateException("Multiple elements: " + a + ", " + b);
-                })
-                .get();
     }
 
     static int getHerokuAssignedPort() {
